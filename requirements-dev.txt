@@ -1,4 +1,5 @@
 -r requirements-test.txt
+wheel
 cibuildwheel
 Cython >= 0.17
 sphinx
