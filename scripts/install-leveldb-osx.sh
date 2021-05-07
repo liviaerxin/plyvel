@@ -18,3 +18,6 @@ cmake \
 mkdir -p Release
 
 cp libleveldb.a Release\
+
+cd..
+cd..

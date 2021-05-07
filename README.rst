@@ -19,7 +19,11 @@ Build leveldb
     ./scripts/install-leveldb-osx.sh
 
 
-2. On `Windows`
+2. On `Windows`(Visual Studio 16 2019, x64)
+
+.. code-block:: sh
+
+    ./scripts/install-leveldb-windows.sh
 
 ************
 Build plyvel
@@ -27,31 +31,41 @@ Build plyvel
 
 Prepare virtual enviroment and dependencies,
 
+On `macOS`,
+
 .. code-block:: sh
 
     python3 -m venv venv
     source ./venv/bin/activate
-    pip3 install -r requirements-dev.txt
+    pip install -r requirements-dev.txt
 
-Build in Local to test,
+On `Windows`,
 
 .. code-block:: sh
 
-    python3 setup.py build_ext --inplace
+    python -m venv venv
+    powershell.exe .\venv\Scripts\Activate.ps1
+    pip install -r requirements-dev.txt
+
+Build `plyvel` in Local for test,
+
+.. code-block:: sh
+
+    python setup.py build_ext --inplace
 
 
 Test,
 
 .. code-block:: sh
     
-    python3 -c "import plyvel; print(plyvel.__leveldb_version__); print(plyvel.__version__)"
+    python -c "import plyvel; print(plyvel.__leveldb_version__); print(plyvel.__version__)"
 
 
-Build Wheel for distribution,
+Build `plyvel` wheel for distribution,
 
 .. code-block:: sh
     
-    python3 setup.py bdist_wheel
+    python setup.py bdist_wheel
 
 
 Install to System,
