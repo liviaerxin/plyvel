@@ -36,7 +36,7 @@ if platform.system() == "Windows":
     extra_objects = []
 else:  # POSIX
     extra_objects = ["{}/lib{}.a".format(static_lib_dirs, l) for l in static_libraries]
-    extra_compile_args += ["-fno-rtti"]
+    extra_compile_args += ["-fno-rtti"] # fix `Symbol not found: __ZTIN7leveldb10ComparatorE` using `leveldb 1.23`
 
 ext_modules = [
     Extension(
@@ -69,6 +69,7 @@ setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: BSD License",
         "Operating System :: POSIX",
+        "Operating System :: Windows",
         "Programming Language :: C++",
         "Programming Language :: Cython",
         "Programming Language :: Python",
