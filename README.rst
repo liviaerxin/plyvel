@@ -1,13 +1,16 @@
 Add support to `Binary Distributions` for building a Platform Wheel (macOS and Windows, tested) with bundling static `leveldb` library for distribution
 
-## Getting the Source
+******************
+Getting the Source
+******************
 
 .. code-block:: sh
 
     git clone --recurse-submodules https://github.com/liviaerxin/plyvel
 
-
-## Build leveldb
+*************
+Build leveldb
+*************
 
 1. On `macOS`
 
@@ -18,8 +21,9 @@ Add support to `Binary Distributions` for building a Platform Wheel (macOS and W
 
 2. On `Windows`
 
-
-## Build plyvel
+************
+Build plyvel
+************
 
 Prepare virtual enviroment and dependencies,
 
