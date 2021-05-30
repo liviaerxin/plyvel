@@ -22,9 +22,9 @@ if platform.system() == "Darwin":
     os.environ["CC"] = "clang"
     os.environ["CXX"] = "clang++"
 
-include_dirs = ["leveldb/include"]
+include_dirs = ["third_party/leveldb/include"]
 static_libraries = ["leveldb"]
-static_lib_dirs = "leveldb/build/Release"
+static_lib_dirs = "third_party/leveldb/build/Release"
 libraries = []
 library_dirs = []
 

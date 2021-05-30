@@ -1,4 +1,6 @@
+******************
 Add support to `Binary Distributions` for building a Platform Wheel (macOS and Windows, tested) with bundling static `leveldb` library for distribution
+******************
 
 ******************
 Getting the Source
@@ -15,7 +17,7 @@ Build leveldb
 1. On `macOS`
 
 .. code-block:: sh
-
+    ./scripts/install-snappy-osx.sh
     ./scripts/install-leveldb-osx.sh
 
 

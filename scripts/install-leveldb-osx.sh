@@ -1,15 +1,15 @@
 #!/bin/sh
 set -eux
 
-cd leveldb
+cd third_party/leveldb
 
 mkdir -p build && cd build
 
 export CC=clang
 export CXX=clang++
-export C_INCLUDE_PATH=/usr/local/include
-export CPLUS_INCLUDE_PATH=/usr/local/include
-export LIBRARY_PATH=/usr/local/lib
+export C_INCLUDE_PATH=/usr/local/include # where find snappy header files
+export CPLUS_INCLUDE_PATH=/usr/local/include # where find snappy header files
+export LIBRARY_PATH=/usr/local/lib # where find snappy library
 
 cmake \
     -DCMAKE_BUILD_TYPE=release \
@@ -18,13 +18,13 @@ cmake \
     -DLEVELDB_BUILD_TESTS=off \
     -DLEVELDB_BUILD_BENCHMARKS=off \
     -DHAVE_SNAPPY=on \
-    # -DSNAPPY_BUILD_BENCHMARKS=off \
-    # -DSNAPPY_BUILD_TESTS=off \
     .. && cmake --build .
 
 mkdir -p Release
 
-cp libleveldb.a Release\
+libtool -static -o Release/libleveldb.a libleveldb.a /usr/local/lib/libsnappy.a
 
-cd..
-cd..
+# cp libleveldb.a Release\
+
+# cd..
+# cd..
