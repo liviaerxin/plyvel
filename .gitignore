@@ -12,5 +12,8 @@ plyvel/_plyvel.cpp
 plyvel/_plyvel.html
 plyvel/_plyvel*.so
 
-venv/
+venv*/
+.venv*/
+.vscode/
+
 settings.json
