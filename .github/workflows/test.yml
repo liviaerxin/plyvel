@@ -28,6 +28,18 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+        
+    - name: Show Python arch
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          file `which python`
+        elif ["$RUNNER_OS" == "macOS"]; then
+          file `which python`
+        else
+          echo "$RUNNER_OS not supported"
+          exit 1
+        fi
+      shell: bash
 
     - name: Install dependencies
       run: |
@@ -43,3 +55,4 @@ jobs:
       run: |
         pip install pytest pytest-cov
         pytest test/test_sample.py
+        python -c "import plyvel; print(plyvel.__leveldb_version__); print(plyvel.__version__)"
