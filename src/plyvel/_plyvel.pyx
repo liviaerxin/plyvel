@@ -36,8 +36,8 @@ from libc.string cimport const_char
 from libcpp.string cimport string
 from libcpp cimport bool as c_bool
 
-cimport plyvel.leveldb as leveldb
-from plyvel.leveldb cimport (
+from . cimport leveldb
+from .leveldb cimport (
     BytewiseComparator,
     Cache,
     Comparator,

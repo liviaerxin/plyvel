@@ -3,4 +3,4 @@ include requirements*.txt
 include *.rst
 include test/*.py
 include doc/conf.py doc/*.rst
-include plyvel/*.pyx plyvel/*.pxd plyvel/*.pxi plyvel/comparator.h
+include src/plyvel/*.pyx src/plyvel/*.pxd src/plyvel/*.pxi src/plyvel/comparator.h

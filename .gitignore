@@ -16,4 +16,5 @@ venv*/
 .venv*/
 .vscode/
 
+fixed_wheels/
 settings.json
