@@ -10,13 +10,13 @@
 ❯ pip install -U build
 
 # install build requirements from `pyproject.toml` file
-❯ python -c 'import toml; c = toml.load("pyproject.toml")
+❯ python -c 'import toml; c = toml.load("pyproject.toml");
 print("\n".join(c["build-system"]["requires"]))' | pip install -r /dev/stdin
 
-❯ python -c 'import toml; c = toml.load("pyproject.toml")
+❯ python -c 'import toml; c = toml.load("pyproject.toml");
 print("\n".join(c["build-system"]["macos"]["requires"]))' | pip install -r /dev/stdin
 
-❯ python -c 'import toml; c = toml.load("pyproject.toml")
+❯ python -c 'import toml; c = toml.load("pyproject.toml");
 print("\n".join(c["dev"]["tools"]["requires"]))' | pip install -r /dev/stdin
 
 # install dependency library

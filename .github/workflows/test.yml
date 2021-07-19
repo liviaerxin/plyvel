@@ -33,7 +33,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -U build
-        python -c 'import toml; c = toml.load("pyproject.toml") print("\n".join(c["build-system"]["requires"]))' | pip install -r /dev/stdin
+        python -c 'import toml; c = toml.load("pyproject.toml"); print("\n".join(c["build-system"]["requires"]))' | pip install -r /dev/stdin
     
     - name: Build package
       run: |
