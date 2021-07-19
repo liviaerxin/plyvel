@@ -4,8 +4,14 @@
 requires = ["setuptools", "wheel", "Cython"]
 build-backend = "setuptools.build_meta"
 
+[build-system.wheel]
+requires = ["cibuildwheel", "delocate", "auditwheel"]
+
 [build-system.macos]
 requires = ["delocate"]
+
+[build-system.linux]
+requires = ["auditwheel"]
 
 [dev.tools]
 requires = ["black", "isort"]

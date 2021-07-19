@@ -23,7 +23,6 @@ jobs:
       if: runner.os == 'macOS'
       run: brew install snappy leveldb
 
-    # Used to host cibuildwheel
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -39,7 +38,6 @@ jobs:
           echo "$RUNNER_OS not supported"
           exit 1
         fi
-      shell: bash
 
     - name: Install dependencies
       run: |
