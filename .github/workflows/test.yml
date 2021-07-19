@@ -1,4 +1,4 @@
-name: plyvel
+name: plyvel test
 
 on: [push, pull_request]
 
