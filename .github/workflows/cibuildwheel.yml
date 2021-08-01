@@ -71,25 +71,29 @@ jobs:
       VCPKG_LIB_PATH: "C:/vcpkg/installed/${{ matrix.architecture }}-windows/lib"
       VCPKG_DLL_PATH: "C:/vcpkg/installed/${{ matrix.architecture }}-windows/bin"
       CIBW_BUILD: "${{ matrix.cibw.build || '*' }}"
+      # search `PATH` for built leveldb and snappy in MacOS
       CIBW_ENVIRONMENT_MACOS: >
         C_INCLUDE_PATH="/usr/local/include:$C_INCLUDE_PATH"
         CPLUS_INCLUDE_PATH="/usr/local/include:$CPLUS_INCLUDE_PATH"
         LIBRARY_PATH="/usr/local/lib:$LIBRARY_PATH"
       # [Path and environment variables for command-line builds](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160), for setuptools msvc compiler in windows
+      # `PATH`: `delvewheel` searches it for the location of DLL dependencies
       CIBW_ENVIRONMENT_WINDOWS: >
-        INCLUDE="$INCLUDE;$VCPKG_INCLUDE_PATH"
-        LIB="$LIB;$VCPKG_LIB_PATH"
+        INCLUDE="$VCPKG_INCLUDE_PATH;$INCLUDE"
+        LIB="$VCPKG_LIB_PATH;$LIB"
+        PATH="$VCPKG_DLL_PATH;$PATH"
       CIBW_ARCHS_LINUX: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_BEFORE_ALL_LINUX: "gcc -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"
       CIBW_BEFORE_ALL_MACOS: "clang -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"      
       # CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:${{ matrix.architecture }}-windows" # cibuildwheel still use `CMD` instead of `PowerShell`, test by using "(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell"
-      CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
-      CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -w {dest_dir} {wheel} -v"
-      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair --add-path $VCPKG_DLL_PATH -w {dest_dir} {wheel} -v"
       # Install delvewheel on windows, because cibuildwheel doesn't yet ship a default repair command for Windows.
       CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
+      CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
+      CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -w {dest_dir} {wheel} -v"
+      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel} -v"
 
+      CIBW_TEST_COMMAND: "pytest test/test_plyvel.py"
       # Build using the manylinux2014 image instead of manylinux2010
       # CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
       # CIBW_MANYLINUX_I686_IMAGE: manylinux2014
@@ -113,6 +117,8 @@ jobs:
       if: runner.os == 'Windows'
       run: |
         vcpkg install leveldb:${{ matrix.architecture }}-windows
+        (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
+        dir $env:VCPKG_INCLUDE_PATH
         dir $env:VCPKG_LIB_PATH
         dir $env:VCPKG_DLL_PATH
 
