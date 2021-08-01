@@ -26,6 +26,8 @@ def db_dir(request):
     name = tempfile.mkdtemp()
 
     def finalize():
+        # (Needed for Windows) Make dir writeable again so cleanup can occur for this test
+        os.chmod(db_dir, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
         shutil.rmtree(name)
 
     request.addfinalizer(finalize)
@@ -59,9 +61,6 @@ def test_open_read_only_dir(db_dir):
     os.chmod(db_dir, stat.S_IRUSR | stat.S_IXUSR)
     with pytest.raises(plyvel.IOError):
         plyvel.DB(db_dir)
-    
-    # (Needed for Windows) Make dir writeable again so cleanup can occur for this test
-    os.chmod(db_dir, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
 
 def test_open_no_create(db_dir):
     with pytest.raises(plyvel.Error):
