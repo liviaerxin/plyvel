@@ -118,9 +118,9 @@ jobs:
       run: |
         vcpkg install leveldb:${{ matrix.architecture }}-windows
         (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
-        dir $env:VCPKG_INCLUDE_PATH
-        dir $env:VCPKG_LIB_PATH
-        dir $env:VCPKG_DLL_PATH
+        If (!(test-path $env:VCPKG_INCLUDE_PATH)) { dir $env:VCPKG_INCLUDE_PATH }
+        If (!(test-path $env:VCPKG_LIB_PATH)) { dir $env:VCPKG_LIB_PATH }
+        If (!(test-path $env:VCPKG_DLL_PATH)) { dir $env:VCPKG_DLL_PATH }
 
     - name: Install cibuildwheel
       run: |
