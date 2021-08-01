@@ -61,9 +61,9 @@ jobs:
           
           - os: windows-2019
             name: win_amd64
-            architecture: x64
             cibw:
-              build: "cp*win_amd64 cp38*win_amd64 cp39*win_amd64"
+              arch: x64
+              build: "cp37*win_amd64 cp38*win_amd64 cp39*win_amd64"
     env:
       VCPKG_INCLUDE_PATH: "C:/vcpkg/installed/${{ matrix.cibw.arch }}-windows/include"
       VCPKG_LIB_PATH: "C:/vcpkg/installed/${{ matrix.cibw.arch }}-windows/lib"
@@ -72,8 +72,8 @@ jobs:
       CIBW_ENVIRONMENT_MACOS: "C_INCLUDE_PATH=/usr/local/include CPLUS_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib"
       # [Path and environment variables for command-line builds](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160)
       CIBW_ENVIRONMENT_WINDOWS: >
-        INCLUDE=$INCLUDE;$VCPKG_INCLUDE_PATH
-        LIB=$LIB;$VCPKG_LIB_PATH
+        INCLUDE="$INCLUDE;$VCPKG_INCLUDE_PATH"
+        LIB="$LIB;$VCPKG_LIB_PATH"
       CIBW_ARCHS_LINUX: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_BEFORE_ALL_LINUX: "gcc -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"
