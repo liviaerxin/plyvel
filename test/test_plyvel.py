@@ -16,24 +16,6 @@ import pytest
 
 import plyvel
 
-# [shutil.rmtree fails on Windows with 'Access is denied'](https://stackoverflow.com/questions/2656322/shutil-rmtree-fails-on-windows-with-access-is-denied)
-def onerror(func, path, exc_info):
-    """
-    Error handler for ``shutil.rmtree``.
-
-    If the error is due to an access error (read only file)
-    it attempts to add write permission and then retries.
-
-    If the error is for another reason it re-raises the error.
-
-    Usage : ``shutil.rmtree(path, onerror=onerror)``
-    """
-    if not os.access(path, os.W_OK):
-        # Is the error an access error ?
-        os.chmod(path, stat.S_IWUSR)
-        func(path)
-    else:
-        raise
 
 #
 # Fixtures
@@ -74,6 +56,7 @@ def test_version():
 
 def test_open_read_only_dir(db_dir):
     # Opening a DB in a read-only dir should not work
+    # Fixes from [Add Azure Pipelines for CI/CD - cross-platform wheels](https://github.com/wbolster/plyvel/pull/131/files#diff-6589f2b9ca434ef8b53c7c9126e03a83a513bcb10d75dfae4bce4d22cfd20369)
     try:
         os.chmod(db_dir, stat.S_IRUSR | stat.S_IXUSR)
         if sys.platform == "win32":
