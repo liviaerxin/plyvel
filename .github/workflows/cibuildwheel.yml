@@ -70,7 +70,10 @@ jobs:
       VCPKG_LIB_PATH: "C:/vcpkg/installed/${{ matrix.cibw.arch }}-windows/lib"
       VCPKG_DLL_PATH: "C:/vcpkg/installed/${{ matrix.cibw.arch }}-windows/bin"
       CIBW_BUILD: "${{ matrix.cibw.build || '*' }}"
-      CIBW_ENVIRONMENT_MACOS: "C_INCLUDE_PATH=/usr/local/include CPLUS_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib"
+      CIBW_ENVIRONMENT_MACOS: >
+        C_INCLUDE_PATH="/usr/local/include:$C_INCLUDE_PATH"
+        CPLUS_INCLUDE_PATH="/usr/local/include:$CPLUS_INCLUDE_PATH"
+        LIBRARY_PATH="/usr/local/lib:$LIBRARY_PATH"
       # [Path and environment variables for command-line builds](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160)
       CIBW_ENVIRONMENT_WINDOWS: >
         INCLUDE="$INCLUDE;$VCPKG_INCLUDE_PATH"
@@ -111,6 +114,7 @@ jobs:
 
     - name: Build
       run: |
+        (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
         python -m cibuildwheel --output-dir wheelhouse
 
     - uses: actions/upload-artifact@v2
