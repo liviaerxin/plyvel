@@ -75,7 +75,7 @@ jobs:
         C_INCLUDE_PATH="/usr/local/include:$C_INCLUDE_PATH"
         CPLUS_INCLUDE_PATH="/usr/local/include:$CPLUS_INCLUDE_PATH"
         LIBRARY_PATH="/usr/local/lib:$LIBRARY_PATH"
-      # [Path and environment variables for command-line builds](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160)
+      # [Path and environment variables for command-line builds](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160), for setuptools msvc compiler in windows
       CIBW_ENVIRONMENT_WINDOWS: >
         INCLUDE="$INCLUDE;$VCPKG_INCLUDE_PATH"
         LIB="$LIB;$VCPKG_LIB_PATH"
@@ -83,10 +83,10 @@ jobs:
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_BEFORE_ALL_LINUX: "gcc -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"
       CIBW_BEFORE_ALL_MACOS: "clang -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"      
-      # CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:x64-windows" # cibuildwheel still use `CMD` instead of `PowerShell`, test by using "(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell"
+      CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:x64-windows && dir $(VCPKG_LIB_PATH)" # cibuildwheel still use `CMD` instead of `PowerShell`, test by using "(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell"
       CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
       CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -w {dest_dir} {wheel} -v"
-      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair --add-path C:/vcpkg/installed/x64-windows/bin -w {dest_dir} {wheel} -v"
+      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair --add-path $(VCPKG_DLL_PATH) -w {dest_dir} {wheel} -v"
       # Install delvewheel on windows, because cibuildwheel doesn't yet ship a default repair command for Windows.
       CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
 
@@ -109,22 +109,15 @@ jobs:
       with:
         platforms: all
 
-    - name: Install Deps
+    - name: Install cibuildwheel
       run: |
-        C:/vcpkg/vcpkg install leveldb:x64-windows
-        dir "C:/vcpkg/"
-        dir "C:/vcpkg/installed/"
-        dir "C:/vcpkg/installed/x64-windows/lib"
+        pip install -U setuptools pip wheel
+        pip install -U cibuildwheel
 
-    # - name: Install cibuildwheel
-    #   run: |
-    #     pip install -U setuptools pip wheel
-    #     pip install -U cibuildwheel
+    - name: Build
+      run: |
+        python -m cibuildwheel --output-dir wheelhouse
 
-    # - name: Build
-    #   run: |
-    #     python -m cibuildwheel --output-dir wheelhouse
-
-    #     - uses: actions/upload-artifact@v2
-    #   with:
-    #       path: ./wheelhouse/*.whl
+        - uses: actions/upload-artifact@v2
+      with:
+          path: ./wheelhouse/*.whl
