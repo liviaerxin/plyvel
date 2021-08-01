@@ -86,8 +86,8 @@ jobs:
       CIBW_ARCHS_WINDOWS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_BEFORE_ALL_LINUX: "gcc -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"
       CIBW_BEFORE_ALL_MACOS: "clang -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"
-      # CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:${{ matrix.architecture }}-windows" # cibuildwheel still use `CMD` instead of `PowerShell`, test by using "(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell"
-      # Install delvewheel on windows, because cibuildwheel doesn't yet ship a default repair command for Windows.
+      # CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:${{ matrix.architecture }}-windows"
+      # Install `delvewheel` on windows, because `cibuildwheel` doesn't yet ship a default repair command for Windows.
       CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
       CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
       CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -w {dest_dir} {wheel} -v"
@@ -114,7 +114,9 @@ jobs:
         with:
           platforms: all
 
-      # From 10/23/2019, GitHub Actions default shell on Windows runners is changing to PowerShell
+      # From 10/23/2019, GitHub Actions default shell on Windows runners is changing to `PowerShell`
+      # However, cibuildwheel still use `CMD` instead of `PowerShell`, test by using "(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell" in
+      # such `CIBW_BEFORE_ALL_WINDOWS`
       - name: Install windows dependencies
         if: runner.os == 'Windows'
         run: |
