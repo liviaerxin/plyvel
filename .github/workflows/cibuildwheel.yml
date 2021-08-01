@@ -72,9 +72,9 @@ jobs:
       CIBW_BUILD: "${{ matrix.cibw.build || '*' }}"
       CIBW_ENVIRONMENT_MACOS: "C_INCLUDE_PATH=/usr/local/include CPLUS_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib"
       # [Path and environment variables for command-line builds](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160)
-      CIBW_ENVIRONMENT_WINDOWS: >
-        INCLUDE="$INCLUDE;$VCPKG_INCLUDE_PATH"
-        LIB="$LIB;$VCPKG_LIB_PATH"
+      # CIBW_ENVIRONMENT_WINDOWS: >
+      #   INCLUDE="$INCLUDE;$VCPKG_INCLUDE_PATH"
+      #   LIB="$LIB;$VCPKG_LIB_PATH"
       CIBW_ARCHS_LINUX: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_BEFORE_ALL_LINUX: "gcc -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"
