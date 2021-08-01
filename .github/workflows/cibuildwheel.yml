@@ -112,7 +112,9 @@ jobs:
     - name: Install Deps
       run: |
         C:/vcpkg/vcpkg install leveldb:x64-windows
-        dir "C:/vcpkg/installed/x64-windows/bin"
+        dir "C:/vcpkg/"
+        dir "C:/vcpkg/installed/"
+        dir "C:/vcpkg/installed/x64-windows/"
 
     # - name: Install cibuildwheel
     #   run: |
