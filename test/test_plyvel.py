@@ -17,6 +17,25 @@ import pytest
 import plyvel
 
 
+def onerror(func, path, exc_info):
+    """
+    Error handler for ``shutil.rmtree``.
+
+    If the error is due to an access error (read only file)
+    it attempts to add write permission and then retries.
+
+    If the error is for another reason it re-raises the error.
+
+    Usage : ``shutil.rmtree(path, onerror=onerror)``
+    """
+    import stat
+    if not os.access(path, os.W_OK):
+        # Is the error an access error ?
+        os.chmod(path, stat.S_IWUSR)
+        func(path)
+    else:
+        raise
+
 #
 # Fixtures
 #
@@ -26,9 +45,7 @@ def db_dir(request):
     name = tempfile.mkdtemp()
 
     def finalize():
-        # (Needed for Windows) Make dir writeable again so cleanup can occur for this test
-        os.chmod(name, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
-        shutil.rmtree(name)
+        shutil.rmtree(name, onerror=onerror)
 
     request.addfinalizer(finalize)
     return name
