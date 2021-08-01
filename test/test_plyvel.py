@@ -16,7 +16,7 @@ import pytest
 
 import plyvel
 
-
+# [shutil.rmtree fails on Windows with 'Access is denied'](https://stackoverflow.com/questions/2656322/shutil-rmtree-fails-on-windows-with-access-is-denied)
 def onerror(func, path, exc_info):
     """
     Error handler for ``shutil.rmtree``.
@@ -28,7 +28,6 @@ def onerror(func, path, exc_info):
 
     Usage : ``shutil.rmtree(path, onerror=onerror)``
     """
-    import stat
     if not os.access(path, os.W_OK):
         # Is the error an access error ?
         os.chmod(path, stat.S_IWUSR)
@@ -75,9 +74,11 @@ def test_version():
 
 def test_open_read_only_dir(db_dir):
     # Opening a DB in a read-only dir should not work
+    db = plyvel.DB(db_dir, create_if_missing=True)
+    db.close()
     os.chmod(db_dir, stat.S_IRUSR | stat.S_IXUSR)
     with pytest.raises(plyvel.IOError):
-        plyvel.DB(db_dir)
+        plyvel.DB(db_dir, create_if_missing=False)
 
 def test_open_no_create(db_dir):
     with pytest.raises(plyvel.Error):
