@@ -83,7 +83,7 @@ jobs:
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_BEFORE_ALL_LINUX: "gcc -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"
       CIBW_BEFORE_ALL_MACOS: "clang -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"      
-      CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:${{ matrix.architecture }}-windows && dir ${{ env.VCPKG_LIB_PATH }}" # cibuildwheel still use `CMD` instead of `PowerShell`, test by using "(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell"
+      CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:${{ matrix.architecture }}-windows && dir ${{ VCPKG_LIB_PATH }}" # cibuildwheel still use `CMD` instead of `PowerShell`, test by using "(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell"
       CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
       CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -w {dest_dir} {wheel} -v"
       CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair --add-path $(VCPKG_DLL_PATH) -w {dest_dir} {wheel} -v"
