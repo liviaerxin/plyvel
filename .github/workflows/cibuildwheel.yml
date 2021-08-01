@@ -82,7 +82,7 @@ jobs:
       CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:x64-windows"
       CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
       CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -w {dest_dir} {wheel} -v"
-      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "$env:VCPKG_DLL_PATH"
+      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "echo $(python --version) && echo $(VCPKG_DLL_PATH) && delvewheel show {wheel} && delvewheel repair --add-path $(VCPKG_DLL_PATH) -w {dest_dir} {wheel} -v"
       # Install delvewheel on windows, because cibuildwheel doesn't yet ship a default repair command for Windows.
       CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
 
