@@ -27,7 +27,7 @@ def db_dir(request):
 
     def finalize():
         # (Needed for Windows) Make dir writeable again so cleanup can occur for this test
-        os.chmod(db_dir, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
+        os.chmod(name, stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR)
         shutil.rmtree(name)
 
     request.addfinalizer(finalize)
