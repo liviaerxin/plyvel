@@ -59,13 +59,12 @@ jobs:
           #   cibw:
           #     build: "cp*win32"
           
-          # On 10/23/2019, GitHub Actions default shell on Windows runners is changing to PowerShell
           - os: windows-latest
             name: win_amd64
             architecture: x64
             cibw:
-              arch: x64
-              build: "cp37*win_amd64" #cp38*win_amd64 cp39*win_amd64"
+              arch: AMD64
+              build: "cp37*" #cp38*win_amd64 cp39*win_amd64"
     env:
       VCPKG_INCLUDE_PATH: "C:/vcpkg/installed/${{ matrix.architecture }}-windows/include"
       VCPKG_LIB_PATH: "C:/vcpkg/installed/${{ matrix.architecture }}-windows/lib"
@@ -84,6 +83,7 @@ jobs:
         PATH="$VCPKG_DLL_PATH;$PATH"
       CIBW_ARCHS_LINUX: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
+      CIBW_ARCHS_WINDOWS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_BEFORE_ALL_LINUX: "gcc -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"
       CIBW_BEFORE_ALL_MACOS: "clang -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"      
       # CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:${{ matrix.architecture }}-windows" # cibuildwheel still use `CMD` instead of `PowerShell`, test by using "(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell"
@@ -113,14 +113,15 @@ jobs:
       with:
         platforms: all
 
+    # From 10/23/2019, GitHub Actions default shell on Windows runners is changing to PowerShell
     - name: Install windows dependencies
       if: runner.os == 'Windows'
       run: |
         vcpkg install leveldb:${{ matrix.architecture }}-windows
         (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
-        If (!(test-path $env:VCPKG_INCLUDE_PATH)) { dir $env:VCPKG_INCLUDE_PATH }
-        If (!(test-path $env:VCPKG_LIB_PATH)) { dir $env:VCPKG_LIB_PATH }
-        If (!(test-path $env:VCPKG_DLL_PATH)) { dir $env:VCPKG_DLL_PATH }
+        If ((test-path $env:VCPKG_INCLUDE_PATH)) { dir $env:VCPKG_INCLUDE_PATH }
+        If ((test-path $env:VCPKG_LIB_PATH)) { dir $env:VCPKG_LIB_PATH }
+        If ((test-path $env:VCPKG_DLL_PATH)) { dir $env:VCPKG_DLL_PATH }
 
     - name: Install cibuildwheel
       run: |
