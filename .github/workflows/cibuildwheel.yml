@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   sdist:
+    name: Build source distribution
     runs-on: ubuntu-latest
     steps:
     - name: Check out repository
@@ -29,38 +30,60 @@ jobs:
         path: dist/*.tar.gz
         
   wheel:
-    name: ${{ matrix.os }}-${{ matrix.cibw.arch }}-wheel
+    name: Build ${{ matrix.os }}-${{ matrix.cibw.arch }} wheel
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
-          - os: macos-latest
-            name: mac-intel
-            cibw:
-              arch: x86_64
-              build: "cp37* cp38* cp39*"
+          # - os: macos-latest
+          #   name: mac-intel
+          #   cibw:
+          #     arch: x86_64
+          #     build: "cp37* cp38* cp39*"
 
-          - os: macos-latest
-            name: mac-arm
-            cibw:
-              arch: universal2
-              build: "cp39*"
+          # - os: macos-latest
+          #   name: mac-arm
+          #   cibw:
+          #     arch: universal2
+          #     build: "cp39*"
 
-          - os: ubuntu-latest
-            name: manylinux
+          # - os: ubuntu-latest
+          #   name: manylinux
+          #   cibw:
+          #     arch: "auto aarch64"
+          #     build: "cp37* cp38* cp39*"
+          
+          # - os: windows-2019
+          #   name: win32
+          #   architecture: x86
+          #   cibw:
+          #     build: "cp*win32"
+          
+          - os: windows-2019
+            name: win_amd64
+            architecture: x64
             cibw:
-              arch: "auto aarch64"
-              build: "cp37* cp38* cp39*"
-  
+              build: "cp*win_amd64 cp38*win_amd64 cp39*win_amd64"
     env:
+      VCPKG_INCLUDE_PATH: "C:/vcpkg/installed/${{ matrix.cibw.arch }}-windows/include"
+      VCPKG_LIB_PATH: "C:/vcpkg/installed/${{ matrix.cibw.arch }}-windows/lib"
+      VCPKG_DLL_PATH: "C:/vcpkg/installed/${{ matrix.cibw.arch }}-windows/bin"
       CIBW_BUILD: "${{ matrix.cibw.build || '*' }}"
       CIBW_ENVIRONMENT_MACOS: "C_INCLUDE_PATH=/usr/local/include CPLUS_INCLUDE_PATH=/usr/local/include LIBRARY_PATH=/usr/local/lib"
+      # [Path and environment variables for command-line builds](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160)
+      CIBW_ENVIRONMENT_WINDOWS: >
+        INCLUDE=$INCLUDE;$VCPKG_INCLUDE_PATH
+        LIB=$LIB;$VCPKG_LIB_PATH
       CIBW_ARCHS_LINUX: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_BEFORE_ALL_LINUX: "gcc -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"
       CIBW_BEFORE_ALL_MACOS: "clang -v && bash scripts/install-snappy.sh && bash scripts/install-leveldb.sh"      
+      CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:x64-windows"
       CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
-      CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -w {dest_dir} -v {wheel}"
+      CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -w {dest_dir} {wheel} -v"
+      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel show {wheel} && delvewheel repair --add-path $VCPKG_DLL_PATH -w {dest_dir} {wheel} -v"
+      # Install delvewheel on windows, because cibuildwheel doesn't yet ship a default repair command for Windows.
+      CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
 
       # Build using the manylinux2014 image instead of manylinux2010
       # CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
