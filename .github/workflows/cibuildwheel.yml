@@ -63,7 +63,7 @@ jobs:
             name: win_amd64
             cibw:
               arch: x64
-              build: "cp37*win_amd64 cp38*win_amd64 cp39*win_amd64"
+              build: "cp37*win_amd64" #cp38*win_amd64 cp39*win_amd64"
     env:
       VCPKG_INCLUDE_PATH: "C:/vcpkg/installed/${{ matrix.cibw.arch }}-windows/include"
       VCPKG_LIB_PATH: "C:/vcpkg/installed/${{ matrix.cibw.arch }}-windows/lib"
@@ -81,7 +81,7 @@ jobs:
       CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:x64-windows"
       CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
       CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -w {dest_dir} {wheel} -v"
-      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel show {wheel} && delvewheel repair --add-path $VCPKG_DLL_PATH -w {dest_dir} {wheel} -v"
+      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "$env:VCPKG_DLL_PATH && delvewheel show {wheel} && delvewheel repair --add-path $env:VCPKG_DLL_PATH -w {dest_dir} {wheel} -v"
       # Install delvewheel on windows, because cibuildwheel doesn't yet ship a default repair command for Windows.
       CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
 
