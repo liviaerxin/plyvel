@@ -59,6 +59,7 @@ jobs:
           #   cibw:
           #     build: "cp*win32"
           
+          # On 10/23/2019, GitHub Actions default shell on Windows runners is changing to PowerShell
           - os: windows-2019
             name: win_amd64
             cibw:
@@ -81,7 +82,7 @@ jobs:
       CIBW_BEFORE_ALL_WINDOWS: "vcpkg install leveldb:x64-windows"
       CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair --lib-sdir . -w {dest_dir} {wheel}"
       CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -w {dest_dir} {wheel} -v"
-      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "$env:VCPKG_DLL_PATH && delvewheel show {wheel} && delvewheel repair --add-path $env:VCPKG_DLL_PATH -w {dest_dir} {wheel} -v"
+      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "$env:VCPKG_DLL_PATH"
       # Install delvewheel on windows, because cibuildwheel doesn't yet ship a default repair command for Windows.
       CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
 
