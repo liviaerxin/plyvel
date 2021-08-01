@@ -53,11 +53,12 @@ jobs:
           #     arch: "auto aarch64"
           #     build: "cp37* cp38* cp39*"
 
-          # - os: windows-2019
+          # - os: windows-latest
           #   name: win32
           #   architecture: x86
           #   cibw:
-          #     build: "cp*win32"
+          #     arch: x86
+          #     build: "cp37* cp38* cp39*"
 
           - os: windows-latest
             name: win_amd64
