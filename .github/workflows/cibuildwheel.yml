@@ -80,9 +80,9 @@ jobs:
       # `PATH`: `delvewheel` searches it for the location of DLL dependencies
       # `INCLUDE` and `LIB`: `MSVC` env variables for `setup.py` to link leveldb and snappy headers and libs in windows
       CIBW_ENVIRONMENT_WINDOWS: >
-        INCLUDE="C:/opt/local/include;$INCLUDE"
-        LIB="C:/opt/local/lib;$LIB"
-        PATH="C:/opt/local/bin;$PATH"
+        INCLUDE="C:/local/include;$INCLUDE"
+        LIB="C:/local/lib;$LIB"
+        PATH="C:/local/bin;$PATH"
       CIBW_ARCHS_LINUX: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_WINDOWS: "${{ matrix.cibw.arch || 'auto' }}"
@@ -123,7 +123,7 @@ jobs:
       - name: Install windows dependencies
         if: runner.os == 'Windows'
         run: |
-          echo "We are in shell:";echo(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
+          echo "We are in shell:"; echo(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
           PowerShell scripts/install-snappy.ps1
           PowerShell scripts/install-leveldb.ps1
           echo "Find leveldb in:"
