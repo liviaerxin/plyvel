@@ -35,23 +35,23 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
-            name: mac-intel
-            cibw:
-              arch: x86_64
-              build: "cp37* cp38* cp39*"
+          # - os: macos-latest
+          #   name: mac-intel
+          #   cibw:
+          #     arch: x86_64
+          #     build: "cp37* cp38* cp39*"
 
-          - os: macos-latest
-            name: mac-arm
-            cibw:
-              arch: universal2
-              build: "cp39*"
+          # - os: macos-latest
+          #   name: mac-arm
+          #   cibw:
+          #     arch: universal2
+          #     build: "cp39*"
 
-          - os: ubuntu-latest
-            name: manylinux
-            cibw:
-              arch: "auto aarch64"
-              build: "cp37* cp38* cp39*"
+          # - os: ubuntu-latest
+          #   name: manylinux
+          #   cibw:
+          #     arch: "auto aarch64"
+          #     build: "cp37* cp38* cp39*"
 
           - os: windows-latest
             name: win32
@@ -71,17 +71,18 @@ jobs:
       VCPKG_LIB_PATH: "C:/vcpkg/installed/${{ matrix.architecture }}-windows/lib"
       VCPKG_DLL_PATH: "C:/vcpkg/installed/${{ matrix.architecture }}-windows/bin"
       CIBW_BUILD: "${{ matrix.cibw.build || '*' }}"
-      # search `PATH` for built leveldb and snappy in MacOS
+      # `CPLUS_INCLUDE_PATH` and `LIBRARY_PATH` for `setup.py` to link leveldb and snappy headers and libs in macOS
       CIBW_ENVIRONMENT_MACOS: >
         C_INCLUDE_PATH="/usr/local/include:$C_INCLUDE_PATH"
         CPLUS_INCLUDE_PATH="/usr/local/include:$CPLUS_INCLUDE_PATH"
         LIBRARY_PATH="/usr/local/lib:$LIBRARY_PATH"
       # [Path and environment variables for command-line builds](https://docs.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-160), for setuptools msvc compiler in windows
       # `PATH`: `delvewheel` searches it for the location of DLL dependencies
+      # `INCLUDE` and `LIB`: `MSVC` env variables for `setup.py` to link leveldb and snappy headers and libs in windows
       CIBW_ENVIRONMENT_WINDOWS: >
-        INCLUDE="$VCPKG_INCLUDE_PATH;$INCLUDE"
-        LIB="$VCPKG_LIB_PATH;$LIB"
-        PATH="$VCPKG_DLL_PATH;$PATH"
+        INCLUDE="$HOME\local\include;$INCLUDE"
+        LIB="$HOME\local\lib;$LIB"
+        PATH="$HOME\local\bin;$PATH"
       CIBW_ARCHS_LINUX: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_WINDOWS: "${{ matrix.cibw.arch || 'auto' }}"
@@ -118,15 +119,17 @@ jobs:
       # From 10/23/2019, GitHub Actions default shell on Windows runners is changing to `PowerShell`
       # However, cibuildwheel still use `CMD` instead of `PowerShell`, test by using "(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell" in
       # such `CIBW_BEFORE_ALL_WINDOWS`
+      # vcpkg install leveldb:${{ matrix.architecture }}-windows
       - name: Install windows dependencies
         if: runner.os == 'Windows'
         run: |
-          vcpkg install leveldb:${{ matrix.architecture }}-windows
           echo "We are in shell:";echo(dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
+          PowerShell scripts/install-snappy.ps1
+          PowerShell scripts/install-leveldb.ps1
           echo "Find leveldb in:"
-          If ((test-path $env:VCPKG_INCLUDE_PATH)) { (dir $env:VCPKG_INCLUDE_PATH) }
-          If ((test-path $env:VCPKG_LIB_PATH)) { (dir $env:VCPKG_LIB_PATH) }
-          If ((test-path $env:VCPKG_DLL_PATH)) { (dir $env:VCPKG_DLL_PATH) }
+          If ((test-path "$HOME\local\include")) { (dir "$HOME\local\include") }
+          If ((test-path "$HOME\local\lib")) { (dir "$HOME\local\lib") }
+          If ((test-path "$HOME\local\bin")) { (dir "$HOME\local\bin") }
 
       - name: Install cibuildwheel
         run: |
