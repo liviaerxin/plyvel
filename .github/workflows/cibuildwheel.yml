@@ -80,9 +80,9 @@ jobs:
       # `PATH`: `delvewheel` searches it for the location of DLL dependencies
       # `INCLUDE` and `LIB`: `MSVC` env variables for `setup.py` to link leveldb and snappy headers and libs in windows
       CIBW_ENVIRONMENT_WINDOWS: >
-        INCLUDE="$HOME\local\include;$INCLUDE"
-        LIB="$HOME\local\lib;$LIB"
-        PATH="$HOME\local\bin;$PATH"
+        INCLUDE="$HOME/local/include;$INCLUDE"
+        LIB="$HOME/local/lib;$LIB"
+        PATH="$HOME/local/bin;$PATH"
       CIBW_ARCHS_LINUX: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_WINDOWS: "${{ matrix.cibw.arch || 'auto' }}"
