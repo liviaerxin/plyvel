@@ -35,23 +35,23 @@ jobs:
     strategy:
       matrix:
         include:
-          # - os: macos-latest
-          #   name: mac-intel
-          #   cibw:
-          #     arch: x86_64
-          #     build: "cp37* cp38* cp39*"
+          - os: macos-latest
+            name: mac-intel
+            cibw:
+              arch: x86_64
+              build: "cp37* cp38* cp39*"
 
-          # - os: macos-latest
-          #   name: mac-arm
-          #   cibw:
-          #     arch: universal2
-          #     build: "cp39*"
+          - os: macos-latest
+            name: mac-arm
+            cibw:
+              arch: universal2
+              build: "cp39*"
 
-          # - os: ubuntu-latest
-          #   name: manylinux
-          #   cibw:
-          #     arch: "auto aarch64"
-          #     build: "cp37* cp38* cp39*"
+          - os: ubuntu-latest
+            name: manylinux
+            cibw:
+              arch: "auto aarch64"
+              build: "cp37* cp38* cp39*"
 
           - os: windows-latest
             name: win32
