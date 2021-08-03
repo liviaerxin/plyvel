@@ -15,7 +15,7 @@ if ($env:CIBW_ARCHS_WINDOWS -eq "x86") {
 
 # Prepare snappy source code
 $url="https://codeload.github.com/google/snappy/tar.gz/$SNAPPY_VERSION"
-$repo="$HOME\opt"
+$repo="C:\opt"
 $output="snappy.tar.gz"
 
 mkdir $repo -ea 0; Set-Location $repo
@@ -24,7 +24,7 @@ tar -xzf $output
 Set-Location snappy-*
 
 # Compile snappy
-$INSTALL_PREFIX="$HOME\local"
+$INSTALL_PREFIX="C:\local"
 
 mkdir build -ea 0; Set-Location build
 cmake -G "Visual Studio 16 2019" -A $arch `

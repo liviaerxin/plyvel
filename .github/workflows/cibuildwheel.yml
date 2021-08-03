@@ -80,9 +80,9 @@ jobs:
       # `PATH`: `delvewheel` searches it for the location of DLL dependencies
       # `INCLUDE` and `LIB`: `MSVC` env variables for `setup.py` to link leveldb and snappy headers and libs in windows
       CIBW_ENVIRONMENT_WINDOWS: >
-        INCLUDE="$HOME/local/include;$INCLUDE"
-        LIB="$HOME/local/lib;$LIB"
-        PATH="$HOME/local/bin;$PATH"
+        INCLUDE="C:/opt/local/include;$INCLUDE"
+        LIB="C:/opt/local/lib;$LIB"
+        PATH="C:/opt/local/bin;$PATH"
       CIBW_ARCHS_LINUX: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_MACOS: "${{ matrix.cibw.arch || 'auto' }}"
       CIBW_ARCHS_WINDOWS: "${{ matrix.cibw.arch || 'auto' }}"
@@ -127,9 +127,9 @@ jobs:
           PowerShell scripts/install-snappy.ps1
           PowerShell scripts/install-leveldb.ps1
           echo "Find leveldb in:"
-          If ((test-path "$HOME\local\include")) { (dir "$HOME\local\include") }
-          If ((test-path "$HOME\local\lib")) { (dir "$HOME\local\lib") }
-          If ((test-path "$HOME\local\bin")) { (dir "$HOME\local\bin") }
+          If ((test-path "C:\local\include")) { (dir "C:\local\include") }
+          If ((test-path "C:\local\lib")) { (dir "C:\local\lib") }
+          If ((test-path "C:\local\bin")) { (dir "C:\local\bin") }
 
       - name: Install cibuildwheel
         run: |

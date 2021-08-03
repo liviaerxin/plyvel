@@ -15,7 +15,7 @@ if ($env:CIBW_ARCHS_WINDOWS -eq "x86") {
 
 # Prepare leveldb source code
 $url="https://codeload.github.com/google/leveldb/tar.gz/$LEVELDB_VERSION"
-$repo="$HOME\opt"
+$repo="C:\opt"
 $output="leveldb.tar.gz"
 
 mkdir $repo -ea 0; Set-Location $repo
@@ -24,7 +24,7 @@ tar -xzf $output
 Set-Location leveldb-*
 
 # Compile leveldb
-$INSTALL_PREFIX="$HOME\local"
+$INSTALL_PREFIX="C:\local"
 $INCLUDE="$INSTALL_PREFIX\include"
 $LIB="$INSTALL_PREFIX\lib"
 # $PATH="$INSTALL_PREFIX\bin"
