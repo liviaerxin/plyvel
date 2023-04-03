@@ -3,7 +3,8 @@ name: plyvel build
 on:
   # Triggers the workflow on push to the master branch
   push:
-    branches: [master]
+    tags:
+      - "v*"
   pull_request:
     branches: [master]
   # Allows you to run this workflow manually from the Actions tab
